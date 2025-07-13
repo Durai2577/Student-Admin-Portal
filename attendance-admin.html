@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin - Attendance Records</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a1a;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #00ffff;
+      margin-bottom: 20px;
+    }
+
+    select, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    select {
+      background: #333;
+      color: white;
+    }
+
+    button {
+      background: #00c9a7;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #009e82;
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+      width: 60%;
+      box-shadow: 0 0 10px #00ffff88;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+    }
+
+    th {
+      background: #004080;
+    }
+
+    td {
+      background: #222;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📊 Admin Attendance Dashboard</h2>
+
+<select id="dateSelect" onchange="loadAttendanceTable()">
+  <option value="">-- Select a Date --</option>
+</select>
+
+<button onclick="exportAttendance()">📥 Export to CSV</button>
+
+<table id="attendanceTable" style="display: none;">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Reg No</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+  const dateSelect = document.getElementById("dateSelect");
+  const table = document.getElementById("attendanceTable");
+  const tbody = table.querySelector("tbody");
+
+  const attendance = JSON.parse(localStorage.getItem("attendanceRecords") || "{}");
+  const dates = Object.keys(attendance).sort().reverse();
+
+  if (dates.length > 0) {
+    dates.forEach(date => {
+      const opt = document.createElement("option");
+      opt.value = date;
+      opt.textContent = date;
+      dateSelect.appendChild(opt);
+    });
+  }
+
+  function loadAttendanceTable() {
+    const selectedDate = dateSelect.value;
+    tbody.innerHTML = "";
+
+    if (!selectedDate || !attendance[selectedDate]) {
+      table.style.display = "none";
+      return;
+    }
+
+    const regNos = attendance[selectedDate];
+    table.style.display = "table";
+
+    regNos.forEach((regno, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${index + 1}</td><td>${regno}</td>`;
+      tbody.appendChild(row);
+    });
+  }
+
+  function exportAttendance() {
+    const date = dateSelect.value;
+    if (!date || !attendance[date]) {
+      alert("Select a valid date first.");
+      return;
+    }
+
+    const rows = attendance[date].map((regno, i) => `${i + 1},${regno}`).join("\n");
+    const csv = `S.No,Reg No\n${rows}`;
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `attendance_${date}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

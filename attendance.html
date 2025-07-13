@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Attendance</title>
+  <style>
+    :root {
+      --bg-color: #1a1a1a;
+      --card-color: #1f1f1f;
+      --text-color: white;
+      --input-bg: #333;
+      --box-shadow: #00ffff88;
+      --accent: #00c9a7;
+      --error-color: #ff4d4d;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      margin: 0;
+    }
+
+    .form-box {
+      background: var(--card-color);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px var(--box-shadow);
+      width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      color: var(--accent);
+      margin-bottom: 25px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: var(--input-bg);
+      color: var(--text-color);
+      font-size: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    input:focus {
+      outline: 2px solid var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #009e82;
+    }
+
+    .msg {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+
+    .success { color: #00ff99; }
+    .error { color: var(--error-color); }
+  </style>
+</head>
+<body>
+
+<div class="form-box">
+  <h2>🟢 Online Attendance Portal</h2>
+
+  <input type="text" id="regno" placeholder="Enter Your Reg No" />
+  <button onclick="markAttendance()">✅ Mark Attendance</button>
+
+  <div id="message" class="msg"></div>
+</div>
+
+<script>
+  function markAttendance() {
+    const regno = document.getElementById("regno").value.trim();
+    const msg = document.getElementById("message");
+    msg.textContent = "";
+
+    if (!regno) {
+      msg.textContent = "Please enter your Registration Number.";
+      msg.className = "msg error";
+      return;
+    }
+
+    const today = new Date().toISOString().split('T')[0]; // yyyy-mm-dd
+    let attendance = JSON.parse(localStorage.getItem("attendanceRecords") || "{}");
+
+    if (!attendance[today]) attendance[today] = [];
+
+    if (attendance[today].includes(regno)) {
+      msg.textContent = "⚠️ Already marked for today.";
+      msg.className = "msg error";
+    } else {
+      attendance[today].push(regno);
+      localStorage.setItem("attendanceRecords", JSON.stringify(attendance));
+      msg.textContent = "✅ Attendance marked successfully!";
+      msg.className = "msg success";
+    }
+
+    document.getElementById("regno").value = "";
+  }
+</script>
+
+</body>
+</html>

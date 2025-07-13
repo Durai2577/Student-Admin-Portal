@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Attendance Login</title>
+  <style>
+    :root {
+      --bg-color: #1a1a1a;
+      --card-color: #1f1f1f;
+      --text-color: white;
+      --input-bg: #333;
+      --box-shadow: #00ffff88;
+      --accent: #00c9a7;
+      --error-color: #ff4d4d;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-box {
+      background: var(--card-color);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px var(--box-shadow);
+      width: 400px;
+      text-align: center;
+    }
+
+    h2 {
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      background: var(--input-bg);
+      border: none;
+      border-radius: 8px;
+      color: var(--text-color);
+    }
+
+    input:focus {
+      outline: 2px solid var(--accent);
+    }
+
+    button {
+      background: var(--accent);
+      color: white;
+      font-size: 16px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #009e82;
+    }
+
+    .error-msg {
+      color: var(--error-color);
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .back-link {
+      margin-top: 15px;
+      display: inline-block;
+      color: #00ffff;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h2>📅 Student Attendance Login</h2>
+  <input type="text" id="regno" placeholder="Enter Your Reg No" />
+  <input type="password" id="password" placeholder="Enter Password" />
+  <button onclick="loginStudent()">Login</button>
+  <div class="error-msg" id="error"></div>
+  <a class="back-link" href="index.html">← Back to Home</a>
+</div>
+
+<script>
+  function loginStudent() {
+    const regno = document.getElementById("regno").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const error = document.getElementById("error");
+    error.textContent = "";
+
+    if (!regno || !password) {
+      error.textContent = "Please enter Reg No and Password.";
+      return;
+    }
+
+    const last4 = regno.slice(-4);
+    const expectedPassword = last4 + "01";
+
+    if (password === expectedPassword) {
+      localStorage.setItem("studentAttendanceSession", regno);
+      window.location.href = "attendance.html";
+    } else {
+      error.textContent = "❌ Invalid credentials. Try again.";
+    }
+  }
+</script>
+
+</body>
+</html>

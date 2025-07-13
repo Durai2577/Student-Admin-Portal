@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - ID Dashboard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a1a;
+      color: white;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h2 {
+      color: #00ffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #2c2c2c;
+      box-shadow: 0 0 15px #00ffff88;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #004080;
+      color: white;
+    }
+
+    td input {
+      width: 100%;
+      padding: 6px;
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 6px 12px;
+      background-color: #00c9a7;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #009e82;
+    }
+
+    .top-actions {
+      margin-bottom: 20px;
+    }
+
+    a.back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #00ffff;
+      text-decoration: none;
+    }
+
+    a.back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📋 Admin - Student ID Dashboard</h2>
+
+<div class="top-actions">
+  <button onclick="exportToCSV()">📁 Export to CSV</button>
+</div>
+
+<table id="idTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Reg No</th>
+      <th>Department</th>
+      <th>Batch</th>
+      <th>Saved On</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<a href="index.html" class="back-link">← Back to Home</a>
+
+<script>
+  const tableBody = document.querySelector("#idTable tbody");
+
+  function loadIDs() {
+    const savedIDs = JSON.parse(localStorage.getItem("savedIDs") || "[]");
+    tableBody.innerHTML = "";
+
+    if (savedIDs.length === 0) {
+      const row = document.createElement("tr");
+      row.innerHTML = "<td colspan='6'>No ID records found.</td>";
+      tableBody.appendChild(row);
+      return;
+    }
+
+    savedIDs.forEach((id, index) => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td><input type="text" id="name-${index}" value="${id.name}"></td>
+        <td><input type="text" id="regno-${index}" value="${id.regno}" disabled></td>
+        <td><input type="text" id="dept-${index}" value="${id.dept}"></td>
+        <td><input type="text" id="batch-${index}" value="${id.batch}"></td>
+        <td>${id.date}</td>
+        <td>
+          <button onclick="saveEdit(${index})">💾 Save</button>
+          <button onclick="deleteID(${index})">🗑 Delete</button>
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  function saveEdit(index) {
+    let savedIDs = JSON.parse(localStorage.getItem("savedIDs") || "[]");
+
+    savedIDs[index].name = document.getElementById(`name-${index}`).value;
+    savedIDs[index].dept = document.getElementById(`dept-${index}`).value;
+    savedIDs[index].batch = document.getElementById(`batch-${index}`).value;
+
+    localStorage.setItem("savedIDs", JSON.stringify(savedIDs));
+    alert("✅ ID updated successfully!");
+    loadIDs();
+  }
+
+  function deleteID(index) {
+    let savedIDs = JSON.parse(localStorage.getItem("savedIDs") || "[]");
+
+    if (confirm("Delete this ID record?")) {
+      savedIDs.splice(index, 1);
+      localStorage.setItem("savedIDs", JSON.stringify(savedIDs));
+      loadIDs();
+    }
+  }
+
+  function exportToCSV() {
+    const savedIDs = JSON.parse(localStorage.getItem("savedIDs") || "[]");
+    if (savedIDs.length === 0) {
+      alert("No data to export.");
+      return;
+    }
+
+    const headers = ["Name", "Reg No", "Department", "Batch", "Date"];
+    const rows = savedIDs.map(id =>
+      [id.name, id.regno, id.dept, id.batch, id.date].join(",")
+    );
+
+    const csv = `data:text/csv;charset=utf-8,${headers.join(",")}\n${rows.join("\n")}`;
+    const encodedUri = encodeURI(csv);
+    const link = document.createElement("a");
+    link.href = encodedUri;
+    link.download = "student_id_records.csv";
+    link.click();
+  }
+
+  loadIDs();
+</script>
+
+</body>
+</html>

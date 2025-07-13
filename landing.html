@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome | Student ID Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(to right, #1f4037, #99f2c8);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+    h1 {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+    p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      color: #f0f0f0;
+    }
+    button {
+      padding: 15px 40px;
+      background-color: #00c9a7;
+      border: none;
+      font-size: 18px;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+    button:hover {
+      background-color: #007e6a;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(30px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome to Smart Student ID Generator</h1>
+    <p>Design, Preview & Download Your Official College ID</p>
+    <button onclick="window.location.href='login.html'">🚀 Get Started</button>
+  </div>
+</body>
+</html>

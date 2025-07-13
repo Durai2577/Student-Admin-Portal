@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Login</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #2c5364);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      margin: 0;
+    }
+    .login-box {
+      background: #1c1c1c;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,255,200,0.3);
+      width: 350px;
+      text-align: center;
+    }
+    h2 {
+      color: #00ffff;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background: #2f2f2f;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00c9a7;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #007e6a;
+    }
+    .error {
+      color: #ff4d4d;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>🔐 Student Login</h2>
+    <input type="text" id="regno" placeholder="Enter Reg No" />
+    <input type="password" id="password" placeholder="Password (Last 4 digits + 01)" />
+    <button onclick="login()">Login</button>
+    <div id="error" class="error"></div>
+  </div>
+
+  <script>
+    function login() {
+      const regno = document.getElementById("regno").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const error = document.getElementById("error");
+
+      if (!regno || regno.length < 5) {
+        error.textContent = "Please enter a valid registration number.";
+        return;
+      }
+
+      const lastFour = regno.slice(-4);
+      const expectedPassword = lastFour + "01";
+
+      if (password === expectedPassword) {
+        localStorage.setItem("studentUser", JSON.stringify({ regno }));
+        window.location.href = "generator.html";
+      } else {
+        error.textContent = "Incorrect password.";
+      }
+    }
+  </script>
+</body>
+</html>

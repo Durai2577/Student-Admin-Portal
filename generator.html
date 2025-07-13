@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ID Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #16222a, #3a6073);
+      color: white;
+      padding: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #00ffff;
+      margin-bottom: 20px;
+    }
+    .form-box {
+      max-width: 700px;
+      margin: auto;
+      background: #1c1c1c;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,255,200,0.3);
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      background: #2f2f2f;
+      color: white;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: #00c9a7;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #007e6a;
+    }
+    .photo-preview {
+      margin-top: 10px;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📝 Student ID Card Details</h2>
+
+  <div class="form-box">
+    <form id="idForm" onsubmit="handleSubmit(event)">
+      <label>Reg No</label>
+      <input id="regno" readonly />
+
+      <label>Name</label>
+      <input id="name" required />
+
+      <label>Department</label>
+      <input id="dept" required />
+
+      <label>Year</label>
+      <input id="year" required />
+
+      <label>Batch</label>
+      <input id="batch" required />
+
+      <label>College Name</label>
+      <input id="college" required />
+
+      <label>Date of Birth</label>
+      <input id="dob" type="date" required />
+
+      <label>Blood Group</label>
+      <input id="blood" placeholder="E.g. A+, B-, O+" required />
+
+      <label>Address</label>
+      <textarea id="address" rows="3" required></textarea>
+
+      <label>Mobile Number</label>
+      <input id="mobile" type="tel" required />
+
+      <label>Upload Student Photo</label>
+      <input type="file" id="photo" accept="image/*" required />
+      <img id="photoPreview" class="photo-preview" />
+
+      <button type="submit">Generate ID Card ➡️</button>
+    </form>
+  </div>
+
+  <script>
+    const student = JSON.parse(localStorage.getItem("studentUser") || "{}");
+    if (!student.regno) {
+      window.location.href = "login.html";
+    }
+
+    document.getElementById("regno").value = student.regno;
+
+    function handleSubmit(e) {
+      e.preventDefault();
+
+      const data = {
+        regno: document.getElementById("regno").value,
+        name: document.getElementById("name").value,
+        dept: document.getElementById("dept").value,
+        year: document.getElementById("year").value,
+        batch: document.getElementById("batch").value,
+        college: document.getElementById("college").value,
+        dob: document.getElementById("dob").value,
+        blood: document.getElementById("blood").value,
+        address: document.getElementById("address").value,
+        mobile: document.getElementById("mobile").value
+      };
+
+      const photoFile = document.getElementById("photo").files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        data.photo = reader.result;
+        localStorage.setItem("studentIDData", JSON.stringify(data));
+        window.location.href = "preview.html";
+      };
+      reader.readAsDataURL(photoFile);
+    }
+
+    document.getElementById("photo").addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("photoPreview").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

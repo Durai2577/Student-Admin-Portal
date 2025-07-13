@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student ID Card Print</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #004e92, #000428);
+      color: white;
+      text-align: center;
+      padding: 30px;
+      margin: 0;
+    }
+
+    h2 {
+      color: #00ffff;
+      margin-bottom: 30px;
+    }
+
+    .id-card {
+      width: 600px;
+      height: 360px;
+      margin: 30px auto;
+      padding: 20px;
+      box-sizing: border-box;
+      background: #fff;
+      color: black;
+      border-radius: 12px;
+      border: 6px solid rgba(0, 64, 128, 0.2); /* 🟦 Soft dark blue border */
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .photo-box {
+      width: 35%;
+      background: #004080;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 15px;
+      color: white;
+    }
+
+    .photo-box img {
+      width: 110px;
+      height: 130px;
+      object-fit: cover;
+      border: 3px solid white;
+      border-radius: 8px;
+    }
+
+    .info-box {
+      width: 65%;
+      padding: 20px 30px;
+      text-align: left;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .row { margin: 6px 0; }
+    .label { font-weight: bold; color: #004080; }
+
+    .signature-block {
+      position: absolute;
+      bottom: 8px;
+      right: 20px;
+      text-align: center;
+    }
+
+    .signature-block img {
+      height: 40px;
+      display: block;
+    }
+
+    .signature-block small {
+      font-size: 10px;
+      color: #004080;
+    }
+
+    button {
+      padding: 10px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #00c9a7;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #009e82;
+    }
+
+    input[type="file"] {
+      margin-top: 10px;
+    }
+
+    #cards {
+      display: block;
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: black;
+        margin: 20mm !important;
+      }
+
+      h2, .upload-group, button {
+        display: none !important;
+      }
+
+      #cards {
+        display: block;
+      }
+
+      .id-card {
+        box-shadow: none;
+        page-break-after: always;
+        margin: 0 auto 30px auto;
+        background-color: #fff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        border: 6px solid rgba(0, 64, 128, 0.2) !important;
+      }
+
+      .photo-box {
+        background: #004080 !important;
+        color: white !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h2>🆔 Print Your Student ID Card</h2>
+
+<div class="upload-group">
+  <label style="color: #00ffff;">Upload Signature (Principal)</label><br />
+  <input type="file" id="signatureInput" accept="image/*" />
+</div>
+
+<div id="cards">
+  <!-- FRONT SIDE -->
+  <div class="id-card">
+    <div class="photo-box">
+      <img id="photo" />
+    </div>
+    <div class="info-box">
+      <div class="row"><span class="label">Name:</span> <span id="name"></span></div>
+      <div class="row"><span class="label">Reg No:</span> <span id="regno"></span></div>
+      <div class="row"><span class="label">Department:</span> <span id="dept"></span></div>
+      <div class="row"><span class="label">Year:</span> <span id="year"></span></div>
+      <div class="row"><span class="label">Batch:</span> <span id="batch"></span></div>
+      <div class="row"><span class="label">College:</span> <span id="college"></span></div>
+      <div class="signature-block">
+        <img id="signatureImg" />
+        <small>Principal Signature</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACK SIDE -->
+  <div class="id-card">
+    <div class="photo-box"></div>
+    <div class="info-box">
+      <div class="row"><span class="label">DOB:</span> <span id="dob"></span></div>
+      <div class="row"><span class="label">Blood Group:</span> <span id="blood"></span></div>
+      <div class="row"><span class="label">Address:</span> <span id="address"></span></div>
+      <div class="row"><span class="label">Mobile:</span> <span id="mobile"></span></div>
+      <div class="row"><span class="label">College:</span> <span id="college2"></span></div>
+    </div>
+  </div>
+</div>
+
+<button onclick="window.print()">🖨️ Print</button>
+
+<script>
+  const data = JSON.parse(localStorage.getItem("studentIDData") || "{}");
+
+  const fill = (id, value) => document.getElementById(id).textContent = value;
+
+  fill("name", data.name);
+  fill("regno", data.regno);
+  fill("dept", data.dept);
+  fill("year", data.year);
+  fill("batch", data.batch);
+  fill("college", data.college);
+  fill("college2", data.college);
+  fill("dob", data.dob);
+  fill("blood", data.blood);
+  fill("address", data.address);
+  fill("mobile", data.mobile);
+
+  document.getElementById("photo").src = data.photo;
+
+  document.getElementById("signatureInput").addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        document.getElementById("signatureImg").src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+
+</body>
+</html>
